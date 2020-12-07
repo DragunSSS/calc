@@ -1,0 +1,1545 @@
+#include <vector>
+#include <string>
+#include <locale>
+#include <windows.h>
+#include <ctime>
+#include <time.h>
+#include <conio.h>
+#include<stdlib.h> 
+#include <stdio.h> 
+#include <iostream>
+using namespace std;
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    srand(time(NULL));
+    vector <int> board; 
+    string l;
+    int i, x, nomer,j,p,stack1,stack2,pot,bet1,bet2,blind,fild,m,fuld,e,k,a,b,c,g;
+    cout<<"$$$$$___$$$$__$$__$$_$$$$$__$$$$$    "<<endl;
+    cout << "$$__$$_$$__$$_$$_$$__$$_____$$__$$"<<endl;
+    cout << "$$$$$__$$__$$_$$$$___$$$$___$$$$$"<<endl; 
+    cout << "$$_____$$__$$_$$_$$__$$_____$$__$$"<<endl;
+    cout << "$$______$$$$__$$__$$_$$$$$__$$__$$"<<endl;
+    cout << "                                       на С++"<<endl;
+    system("pause");
+    cout << "Правила" << endl; 
+    cout << "Покер только 1 на 1(есть защита от неправильных ставок и невозможных решений)" << endl;
+    cout << "чтобы сделать что-либо, надо чётко написать 'call' и тп " << endl;
+    cout << "после рейза надо написать ДО какого кол-во фишек хотите поднять ставку(не насколько, а ДО какого)" << endl;
+    cout << "Пока не придумал, как написать,чтобы программа сама понимала" << endl;
+    cout << "кто победил или проиграл(3 часа на это потратил и сдался)" << endl;
+    cout << "Так что смотря на карты, пока решает сам человек и пишет цифру,1 или 2" << endl;
+    cout << "в зависимости от того, кто победил,если поделили ,то писать цифру 3" << endl;
+    cout << "а так всё работает , есть блайнды и смена хода,в случае алына открываются сразу все карты" << endl;
+    cout << "если хотите поставить всё ,то стоит ограничение " << endl;
+    cout << "что ставка не может быть больше размера стэка опонента и он напишет что неправильно" << endl;
+    cout << "чтобы не было видно карт опонента делал разрывы между ходами" << endl;
+    cout << "удачи" << endl;
+
+    system("pause");
+
+    for (g = 0; g < 27; g++) {
+        cout << "|    |    |    |    |    |    |    |" << endl;
+    }
+
+
+     x = 100;
+     a = 0;
+    stack1 = 500;
+    stack2 = 500;
+    blind = 10;
+    for (i = 0; i < 9; i++) {
+        board.push_back(x);
+        }
+    leble:
+    while ((stack1 != 1000) && (stack2 != 1000)) {
+        m = 1;
+        e = 0;
+        x = 100;
+        fild = 0;
+        fuld = 0; 
+        for (i = 0; i < 9; i++) {
+            board[i]=x;
+        }
+        //генератор рандомных чисел для массива из 9 цифр без повторений (из 52 цифр)
+        nomer = rand() % 52;
+        board[0] = nomer;
+        j = 1;
+        while ((board[1] == 100) || (board[2] == 100) || (board[3] == 100) || (board[4] == 100) || (board[5] == 100) || (board[6] == 100) || (board[7] == 100) || (board[8] == 100)) {
+            nomer = rand() % 52;
+            p = 0;
+            for (int i = 0; i < j; i++) {
+                if (board[i] == nomer) {
+                    p = 1;
+                }
+            }
+            if (p == 0) {
+                board[j] = nomer;
+                j++;
+            }
+        }
+        //генератор рандомных чисел для массива 9 цифр без повторений ^ ^ ^
+       
+        cout << endl;
+        x = 1;
+
+        
+        string cards[] = { "2h","3h","4h","5h","6h","7h","8h","9h","10h","Jh","Qh","Kh","Ah","2d","3d","4d","5d","6d","7d","8d","9d","10d","Jd","Qd","Kd","Ad","2c","3c","4c","5c","6c","7c","8c","9c","10c","Jc","Qc","Kc","Ac","2s","3s","4s","5s","6s","7s","8s","9s","10s","Js","Qs","Ks","As" };
+
+
+
+        if ((a % 2) == 0) {
+            //все действия на префлопе
+            cout << "your turn" << endl;
+            system("pause");
+            cout << "my stack =" << stack1 << endl;
+            cout << "player2 stack =" << stack2 << endl;
+            cout << "my cards:";
+            cout << cards[board[5]] << " ";
+            cout << cards[board[6]] << " ";
+            system("pause");
+            cout << endl;
+            cout << " my bet=" << blind << endl;
+            cout << "my stack =" << (stack1 - blind) << endl;
+            bet1 = blind;
+            stack1 = stack1 - bet1;
+            bet2 = (2 * blind);
+            stack2 = stack2 - bet2;
+            cout << " player2 bet=" << bet2 << endl;
+            cout << "player2 stack =" << stack2 << endl;
+            system("pause");
+            j = 1;
+            fild = 0;
+            while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+                cout << "your turn" << endl;
+                cout << "my cards:";
+                cout << cards[board[5]] << " ";
+                cout << cards[board[6]] << " ";
+                cout << "наберите (fold / call / raise (до какого количества фишек))  :";
+                x = 1;
+                while (x != 0) {
+                    cin >> l;
+                    if (l == "raise") {
+                        cout << "сколько фишек:";
+                        cin >> p;
+                        if ((p <= (bet1 + stack1)) && (p > bet1) && (p <= (stack2 + bet2))) {
+                            x = 0;
+                            stack1 = stack1 + bet1 - p;
+                            bet1 = p;
+                            cout << "my bet=" << bet1 << endl;
+                            cout << "my stack=" << stack1 << endl;
+                            j = j + 500;
+                        }
+                    }
+
+
+                    if ((l == "fold") && (bet1 < bet2)) {
+                        x = 0;
+                        fild = 1;
+                        fuld = 1;
+                        cout << "my stack =" << stack1 << endl;
+                        cout << "player2 stack =" << (stack2 + bet1 + bet2) << endl;
+                        stack2 = (stack2 + bet1 + bet2);
+
+                    }
+                    if (l == "call") {
+                        x = 0;
+                        stack1 = stack1 - bet2 + bet1;
+                        bet1 = bet2;
+                        cout << "my bet=" << bet1 << endl;
+                        cout << "my stack=" << stack1 << endl;
+                        j = j + 1;
+                    }
+
+                    if (x != 0) { cout << "введите правильные данные" << endl; }
+                }
+
+
+
+
+
+                if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                    break;
+                }
+                else {
+                    for (g = 0; g < 27; g++) {
+                        cout << "|    |    |    |    |    |    |    |" << endl;
+                    }
+                    cout << "player2 turn" << endl;
+                    system("pause");
+                    cout << endl;
+                    cout << "player2 cards:";
+                    cout << cards[board[7]] << " ";
+                    cout << cards[board[8]] << " " << endl;
+                    cout << "my bet" << bet1 << endl;
+                    cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                    m = 1;
+                    while (m != 0) {
+                        cin >> l;
+                        if (l == "raise") {
+                            cout << "сколько фишек:";
+                            cin >> p;
+                            if ((p <= (bet2 + stack2)) && (p > bet1) && (p <= (stack1 + bet1))) {
+                                m = 0;
+                                stack2 = stack2 + bet2 - p;
+                                bet2 = p;
+                                cout << "player2 bet=" << bet2 << endl;
+                                cout << "player2 stack=" << stack2 << endl;
+
+                            }
+                        }
+
+
+                        if ((l == "fold") && (bet2 < bet1)) {
+                            m = 0;
+                            fild = 1;
+                            fuld = 1;
+                            cout << "my stack =" << (stack1 + bet1 + bet2) << endl;
+                            cout << "player2 stack =" << stack2 << endl;
+                            stack1 = (stack1 + bet1 + bet2);
+
+                        }
+                        if (l == "check") {
+                            m = 0;
+                            fild = 1;
+                            stack1 = stack1 - bet2 + bet1;
+                            bet1 = bet2;
+                            cout << "player2 bet=" << bet2 << endl;
+                            cout << "player2 stack=" << stack2 << endl;
+
+                        }
+                        if ((l == "call") && (j > 500)) {
+                            m = 0;
+                            stack2 = stack2 + bet2 - bet1;
+                            bet2 = bet1;
+                            cout << "player2 bet=" << bet2 << endl;
+                            cout << "player2 stack=" << stack2 << endl;
+                        }
+
+                        if (m != 0) { cout << "введите правильные данные" << endl; }
+                    }
+
+                }
+            }
+            //все действия на префлопе
+            pot = 0;
+            if ((stack1 == 1000) || (stack2 == 1000)) {
+                goto leble;
+
+            }
+            else {
+                //все действия на флопе
+                if (fuld == 0) {
+                    if ((stack1 == 0) || (stack2 == 0)) {
+                        pot = (bet1 + bet2);
+                        cout << "board:";
+                        cout << cards[board[0]] << " ";
+                        cout << cards[board[1]] << " ";
+                        cout << cards[board[2]] << " ";
+                        cout << cards[board[3]] << " ";
+                        cout << cards[board[4]] << " " << endl;
+                        cout << "pot=" << pot << endl;
+                        e = 1;
+                        system("pause");
+                        cout << "my cards: ";
+                        cout << cards[board[5]] << " ";
+                        cout << cards[board[6]] << " ";
+                        cout << "player2 cards: ";
+                        cout << cards[board[7]] << " ";
+                        cout << cards[board[8]] << " ";
+                        cout << "кто победил игрок 1 или 2?";
+                        cin >> a;
+                        if (a == 1) {
+                            stack1 = stack1 + pot;
+                        }
+                        if (a == 2) {
+                            stack2 = stack2 + pot;
+                        }
+                        if (a == 3) {
+                            stack1 = (stack1 + ((pot + bet1 + bet2) / 2));
+                            stack2 = (stack2 + ((pot + bet1 + bet2) / 2));
+                        }
+                        cout << "my stack =" << stack1 << endl;
+                        cout << "player2 stack =" << stack2 << endl;
+
+
+                        //all in
+                    }
+                    else {
+                        pot = (bet1 + bet2);
+                        cout << "flop:";
+                        cout << cards[board[0]] << " ";
+                        cout << cards[board[1]] << " ";
+                        cout << cards[board[2]] << " " << endl;
+                        cout << "pot=" << pot << endl;
+                        system("pause");
+                        bet1 = 0;
+                        bet2 = 0;
+                        fild = 0;
+                        fuld = 0;
+                        j = 1;
+                        m = 1;
+                        x = 1;
+
+
+
+
+
+
+
+                        while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+                            for (g = 0; g < 27; g++) {
+                                cout << "|    |    |    |    |    |    |    |" << endl;
+                            }
+
+                            cout << "player2 turn" << endl;
+                            cout << "player2 cards:";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " ";
+                            cout << "наберите (fold / call / check / raise (до какого количества фишек))  :";
+                            x = 1;
+                            while (x != 0) {
+                                cin >> l;
+                                if (l == "raise") {
+                                    cout << "сколько фишек:";
+                                    cin >> p;
+                                    if ((p <= (bet2 + stack2)) && (p > bet2) && (p <= (stack1 + bet1))) {
+                                        x = 0;
+                                        stack2 = stack2 + bet2 - p;
+                                        bet2 = p;
+                                        cout << "player2 bet=" << bet2 << endl;
+                                        cout << "player2 stack=" << stack2 << endl;
+                                        j = j + 500;
+                                    }
+                                }
+                                if ((l == "check") && (bet2 == 0)) {
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+                                    j = j + 1;
+                                    x = 0;
+                                }
+
+                                if ((l == "fold") && (bet2 < bet1)) {
+                                    x = 0;
+                                    fild = 1;
+                                    fuld = 1;
+                                    cout << "player2 stack =" << stack2 << endl;
+                                    cout << "my stack =" << (stack1 + bet2 + bet1 + pot) << endl;
+                                    stack1 = (stack1 + bet1 + bet2);
+                                }
+                                if ((l == "call") && (bet1 > bet2)) {
+                                    x = 0;
+                                    stack2 = stack2 - bet1 + bet2;
+                                    bet2 = bet1;
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+                                    j = j + 1;
+                                }
+
+                                if (x != 0) { cout << "введите правильные данные" << endl; }
+                            }
+
+
+
+
+
+                            if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                                break;
+                            }
+                            else {
+                                for (g = 0; g < 27; g++) {
+                                    cout << "|    |    |    |    |    |    |    |" << endl;
+                                }
+
+                                cout << "my turn" << endl;
+                                system("pause");
+                                cout << endl;
+                                cout << "my cards:";
+                                cout << cards[board[5]] << " ";
+                                cout << cards[board[6]] << " " << endl;
+                                cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                                m = 1;
+                                while (m != 0) {
+                                    cin >> l;
+                                    if (l == "raise") {
+                                        cout << "сколько фишек:";
+                                        cin >> p;
+                                        if ((p <= (bet1 + stack1)) && (p > bet2) && (p <= (stack2 + bet2))) {
+                                            m = 0;
+                                            stack1 = stack1 + bet1 - p;
+                                            bet1 = p;
+                                            cout << "my bet=" << bet1 << endl;
+                                            cout << "my stack=" << stack1 << endl;
+
+                                        }
+                                    }
+
+
+                                    if ((l == "fold") && (bet1 < bet2)) {
+                                        m = 0;
+                                        fild = 1;
+                                        fuld = 1;
+                                        cout << "player2 stack =" << (stack2 + bet1 + bet2 + pot) << endl;
+                                        cout << "my stack =" << stack1 << endl;
+                                        stack2 = (stack2 + bet1 + bet2);
+                                    }
+                                    if ((l == "check") && (bet2 == 0)) {
+                                        m = 0;
+                                        fild = 1;
+                                        stack1 = stack1;
+                                        bet1 = bet2;
+                                        cout << "my bet=" << bet1 << endl;
+                                        cout << "my stack=" << stack1 << endl;
+
+                                    }
+                                    if ((l == "call") && (j > 500)) {
+                                        m = 0;
+                                        stack1 = stack1 + bet1 - bet2;
+                                        bet1 = bet2;
+                                        cout << "my bet=" << bet1 << endl;
+                                        cout << "my stack=" << stack1 << endl;
+                                    }
+
+                                    if (m != 0) { cout << "введите правильные данные" << endl; }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            //все действия на флопе
+
+
+            //все действия на тёрне
+            if ((stack1 == 1000) || (stack2 == 1000)) {
+
+            }
+            else {
+                if (fuld == 0) {
+                    if ((stack1 == 0) || (stack2 == 0)) {
+                        if (e == 0) {
+                            pot = (pot + bet1 + bet2);
+                            cout << "board:";
+                            cout << cards[board[0]] << " ";
+                            cout << cards[board[1]] << " ";
+                            cout << cards[board[2]] << " ";
+                            cout << cards[board[3]] << " ";
+                            cout << cards[board[4]] << " " << endl;
+                            cout << "pot=" << pot << endl;
+                            e = 1;
+                            cout << cards[board[5]] << " ";
+                            cout << cards[board[6]] << " ";
+                            cout << "player2 cards: ";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " ";
+                            system("pause");
+                            cout << "кто победил игрок 1 или 2?";
+                            cin >> a;
+                            if (a == 1) {
+                                stack1 = stack1 + pot;
+                            }
+                            if (a == 2) {
+                                stack2 = stack2 + pot;
+                            }
+                            if (a == 3) {
+                                stack1 = (stack1 + ((pot + bet1 + bet2) / 2));
+                                stack2 = (stack2 + ((pot + bet1 + bet2) / 2));
+                            }
+                            cout << "my stack =" << stack1 << endl;
+                            cout << "player2 stack =" << stack2 << endl;
+
+
+                        }
+                        //all in
+                    }
+                    else {
+                        pot = (pot + bet1 + bet2);
+                        cout << "turn:";
+                        cout << cards[board[0]] << " ";
+                        cout << cards[board[1]] << " ";
+                        cout << cards[board[2]] << " ";
+                        cout << cards[board[3]] << " " << endl;
+                        cout << "pot=" << pot << endl;
+                        system("pause");
+                        bet1 = 0;
+                        bet2 = 0;
+                        fild = 0;
+                        fuld = 0;
+                        j = 1;
+                        m = 1;
+                        x = 1;
+
+
+
+
+
+
+
+                        while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+                            for (g = 0; g < 27; g++) {
+                                cout << "|    |    |    |    |    |    |    |" << endl;
+                            }
+
+                            cout << "player2 turn" << endl;
+                            cout << "player2 cards:";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " ";
+                            cout << "наберите (fold / call / check / raise (до какого количества фишек))  :";
+                            x = 1;
+                            while (x != 0) {
+                                cin >> l;
+                                if (l == "raise") {
+                                    cout << "сколько фишек:";
+                                    cin >> p;
+                                    if ((p <= (bet2 + stack2)) && (p > bet2) && (p <= (stack1 + bet1))) {
+                                        x = 0;
+                                        stack2 = stack2 + bet2 - p;
+                                        bet2 = p;
+                                        cout << "player2 bet=" << bet2 << endl;
+                                        cout << "player2 stack=" << stack2 << endl;
+                                        j = j + 500;
+                                    }
+                                }
+                                if ((l == "check") && (bet2 == 0)) {
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+                                    j = j + 1;
+                                    x = 0;
+                                }
+
+                                if ((l == "fold") && (bet2 < bet1)) {
+                                    x = 0;
+                                    fild = 1;
+                                    fuld = 1;
+                                    cout << "player2 stack =" << stack2 << endl;
+                                    cout << "my stack =" << (stack1 + bet2 + bet1 + pot) << endl;
+                                    stack1 = (stack1 + bet1 + bet2);
+                                }
+                                if ((l == "call") && (bet1 > bet2)) {
+                                    x = 0;
+                                    stack2 = stack2 - bet1 + bet2;
+                                    bet2 = bet1;
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+                                    j = j + 1;
+                                }
+
+                                if (x != 0) { cout << "введите правильные данные" << endl; }
+                            }
+
+
+
+
+
+                            if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                                break;
+                            }
+                            else {
+                                for (g = 0; g < 27; g++) {
+                                    cout << "|    |    |    |    |    |    |    |" << endl;
+                                }
+
+                                cout << "my turn" << endl;
+                                system("pause");
+                                cout << endl;
+                                cout << "my cards:";
+                                cout << cards[board[5]] << " ";
+                                cout << cards[board[6]] << " " << endl;
+                                cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                                m = 1;
+                                while (m != 0) {
+                                    cin >> l;
+                                    if (l == "raise") {
+                                        cout << "сколько фишек:";
+                                        cin >> p;
+                                        if ((p <= (bet1 + stack1)) && (p > bet2) && (p <= (stack2 + bet2))) {
+                                            m = 0;
+                                            stack1 = stack1 + bet1 - p;
+                                            bet1 = p;
+                                            cout << "my bet=" << bet1 << endl;
+                                            cout << "my stack=" << stack1 << endl;
+
+                                        }
+                                    }
+
+
+                                    if ((l == "fold") && (bet1 < bet2)) {
+                                        m = 0;
+                                        fild = 1;
+                                        fuld = 1;
+                                        cout << "player2 stack =" << (stack2 + bet1 + bet2 + pot) << endl;
+                                        cout << "my stack =" << stack1 << endl;
+                                        stack2 = (stack2 + bet1 + bet2);
+                                    }
+                                    if ((l == "check") && (bet2 == 0)) {
+                                        m = 0;
+                                        fild = 1;
+                                        stack1 = stack1;
+                                        bet1 = bet2;
+                                        cout << "my bet=" << bet1 << endl;
+                                        cout << "my stack=" << stack1 << endl;
+
+                                    }
+                                    if ((l == "call") && (j > 500)) {
+                                        m = 0;
+                                        stack1 = stack1 + bet1 - bet2;
+                                        bet1 = bet2;
+                                        cout << "my bet=" << bet1 << endl;
+                                        cout << "my stack=" << stack1 << endl;
+                                    }
+
+                                    if (m != 0) { cout << "введите правильные данные" << endl; }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            //все действия на тёрне
+
+            //все действия на ривере
+            if ((stack1 == 1000) || (stack2 == 1000)) {
+                goto leble;
+            }
+            else {
+                if (fuld == 0) {
+                    if ((stack1 == 0) || (stack2 == 0)) {
+                        if (e == 0) {
+                            pot = (pot + bet1 + bet2);
+                            cout << "board:";
+                            cout << cards[board[0]] << " ";
+                            cout << cards[board[1]] << " ";
+                            cout << cards[board[2]] << " ";
+                            cout << cards[board[3]] << " ";
+                            cout << cards[board[4]] << " " << endl;
+                            cout << "pot=" << pot << endl;
+                            cout << cards[board[5]] << " ";
+                            cout << cards[board[6]] << " ";
+                            cout << "player2 cards: ";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " ";
+                            system("pause");
+                            cout << "кто победил игрок 1 или 2?";
+                            cin >> a;
+                            if (a == 1) {
+                                stack1 = stack1 + pot;
+                            }
+                            if (a == 2) {
+                                stack2 = stack2 + pot;
+                            }
+                            if (a == 3) {
+                                stack1 = (stack1 + ((pot + bet1 + bet2) / 2));
+                                stack2 = (stack2 + ((pot + bet1 + bet2) / 2));
+                            }
+                            cout << "my stack =" << stack1 << endl;
+                            cout << "player2 stack =" << stack2 << endl;
+
+
+                        }
+
+                        //all in
+                    }
+                    else {
+                        pot = (pot + bet1 + bet2);
+                        cout << "river:";
+                        cout << cards[board[0]] << " ";
+                        cout << cards[board[1]] << " ";
+                        cout << cards[board[2]] << " ";
+                        cout << cards[board[3]] << " ";
+                        cout << cards[board[4]] << " " << endl;
+                        cout << "pot=" << pot << endl;
+                        system("pause");
+                        bet1 = 0;
+                        bet2 = 0;
+                        fild = 0;
+                        fuld = 0;
+                        j = 1;
+                        m = 1;
+                        x = 1;
+
+
+
+
+
+
+
+                        while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+                            for (g = 0; g < 27; g++) {
+                                cout << "|    |    |    |    |    |    |    |" << endl;
+                            }
+
+                            cout << "player2 turn" << endl;
+                            cout << "player2 cards:";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " ";
+                            cout << "наберите (fold / call / check / raise (до какого количества фишек))  :";
+                            x = 1;
+                            while (x != 0) {
+                                cin >> l;
+                                if (l == "raise") {
+                                    cout << "сколько фишек:";
+                                    cin >> p;
+                                    if ((p <= (bet2 + stack2)) && (p > bet2) && (p <= (stack1 + bet1))) {
+                                        x = 0;
+                                        stack2 = stack2 + bet2 - p;
+                                        bet2 = p;
+                                        cout << "player2 bet=" << bet2 << endl;
+                                        cout << "player2 stack=" << stack2 << endl;
+                                        j = j + 500;
+                                    }
+                                }
+                                if ((l == "check") && (bet2 == 0)) {
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+                                    j = j + 1;
+                                    x = 0;
+                                }
+
+                                if ((l == "fold") && (bet2 < bet1)) {
+                                    x = 0;
+                                    fild = 1;
+                                    fuld = 1;
+                                    cout << "player2 stack =" << stack2 << endl;
+                                    cout << "my stack =" << (stack1 + bet2 + bet1 + pot) << endl;
+                                    stack1 = (stack1 + bet1 + bet2);
+                                }
+                                if ((l == "call") && (bet1 > bet2)) {
+                                    x = 0;
+                                    stack2 = stack2 - bet1 + bet2;
+                                    bet2 = bet1;
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+                                    j = j + 1;
+                                }
+
+                                if (x != 0) { cout << "введите правильные данные" << endl; }
+                            }
+
+
+
+
+
+                            if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                                break;
+                            }
+                            else {
+                                for (g = 0; g < 27; g++) {
+                                    cout << "|    |    |    |    |    |    |    |" << endl;
+                                }
+
+                                cout << "my turn" << endl;
+                                system("pause");
+                                cout << endl;
+                                cout << "my cards:";
+                                cout << cards[board[5]] << " ";
+                                cout << cards[board[6]] << " " << endl;
+                                cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                                m = 1;
+                                while (m != 0) {
+                                    cin >> l;
+                                    if (l == "raise") {
+                                        cout << "сколько фишек:";
+                                        cin >> p;
+                                        if ((p <= (bet1 + stack1)) && (p > bet2) && (p <= (stack2 + bet2))) {
+                                            m = 0;
+                                            stack1 = stack1 + bet1 - p;
+                                            bet1 = p;
+                                            cout << "my bet=" << bet1 << endl;
+                                            cout << "my stack=" << stack1 << endl;
+
+                                        }
+                                    }
+
+
+                                    if ((l == "fold") && (bet1 < bet2)) {
+                                        m = 0;
+                                        fild = 1;
+                                        fuld = 1;
+                                        cout << "player2 stack =" << (stack2 + bet1 + bet2 + pot) << endl;
+                                        cout << "my stack =" << stack1 << endl;
+                                        stack2 = (stack2 + bet1 + bet2);
+                                    }
+                                    if ((l == "check") && (bet2 == 0)) {
+                                        m = 0;
+                                        fild = 1;
+                                        stack1 = stack1;
+                                        bet1 = bet2;
+                                        cout << "my bet=" << bet1 << endl;
+                                        cout << "my stack=" << stack1 << endl;
+
+                                    }
+                                    if ((l == "call") && (j > 500)) {
+                                        m = 0;
+                                        stack1 = stack1 + bet1 - bet2;
+                                        bet1 = bet2;
+                                        cout << "my bet=" << bet1 << endl;
+                                        cout << "my stack=" << stack1 << endl;
+                                    }
+
+                                    if (m != 0) { cout << "введите правильные данные" << endl; }
+                                }
+
+                            }
+                        }
+                    }
+                    //все дефствия на ривере 
+                    cout << cards[board[5]] << " ";
+                    cout << cards[board[6]] << " ";
+                    cout << "player2 cards: ";
+                    cout << cards[board[7]] << " ";
+                    cout << cards[board[8]] << " ";
+                    system("pause");
+                    cout << "кто победил игрок 1 или 2?";
+                    cin >> a;
+                    if (a == 1) {
+                        stack1 = stack1 + pot;
+                    }
+                    if (a == 2) {
+                        stack2 = stack2 + pot;
+                    }
+                    if (a == 3) {
+                        stack1 = (stack1 + ((pot + bet1 + bet2) / 2));
+                        stack2 = (stack2 + ((pot + bet1 + bet2) / 2));
+                    }
+                    cout << "my stack =" << stack1 << endl;
+                    cout << "player2 stack =" << stack2 << endl;
+                }
+            }
+
+
+        }
+        else {
+        for (g = 0; g < 27; g++) {
+            cout << "|    |    |    |    |    |    |    |" << endl;
+        }
+
+        cout << "player2 turn" << endl;
+        system("pause");
+        cout << "my stack =" << stack1 << endl;
+        cout << "player2 stack =" << stack2 << endl;
+        cout << "player2 cards:";
+        cout << cards[board[7]] << " ";
+        cout << cards[board[8]] << " ";
+        system("pause");
+        cout << endl;
+        cout << " player2 bet=" << blind << endl;
+        cout << "player2 stack =" << (stack1 - blind) << endl;
+        bet2 = blind;
+        bet1 = (2 * blind);
+        stack1 = stack1 - bet1;
+
+        stack2 = stack2 - bet2;
+        cout << " my bet=" << bet1 << endl;
+        cout << "my stack =" << stack1 << endl;
+        system("pause");
+        j = 1;
+        fild = 0;
+        while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+            cout << "player2 turn" << endl;
+            cout << "player2 cards:";
+            cout << cards[board[7]] << " ";
+            cout << cards[board[8]] << " ";
+            cout << "наберите (fold / call / raise (до какого количества фишек))  :";
+            x = 1;
+            while (x != 0) {
+                cin >> l;
+                if (l == "raise") {
+                    cout << "сколько фишек:";
+                    cin >> p;
+                    if ((p <= (bet2 + stack2)) && (p > bet2) && (p <= (stack1 + bet1))) {
+                        x = 0;
+                        stack2 = stack2 + bet2 - p;
+                        bet2 = p;
+                        cout << "player2 bet=" << bet2 << endl;
+                        cout << "player2 stack=" << stack2 << endl;
+                        j = j + 500;
+                    }
+                }
+
+
+                if ((l == "fold") && (bet2 < bet1)) {
+                    x = 0;
+                    fild = 1;
+                    fuld = 1;
+                    cout << "player2 stack =" << stack2 << endl;
+                    cout << "my stack =" << (stack1 + bet2 + bet1) << endl;
+                    stack1 = (stack1 + bet1 + bet2);
+
+                }
+                if (l == "call") {
+                    x = 0;
+                    stack2 = stack2 - bet1 + bet2;
+                    bet2 = bet1;
+                    cout << "player2 bet=" << bet2 << endl;
+                    cout << "player2 stack=" << stack2 << endl;
+                    j = j + 1;
+                }
+
+                if (x != 0) { cout << "введите правильные данные" << endl; }
+            }
+
+
+
+
+
+            if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                break;
+            }
+            else {
+                for (g = 0; g < 27; g++) {
+                    cout << "|    |    |    |    |    |    |    |" << endl;
+                }
+
+                cout << "my turn" << endl;
+                system("pause");
+                cout << endl;
+                cout << "my cards:";
+                cout << cards[board[5]] << " ";
+                cout << cards[board[6]] << " " << endl;
+                cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                m = 1;
+                while (m != 0) {
+                    cin >> l;
+                    if (l == "raise") {
+                        cout << "сколько фишек:";
+                        cin >> p;
+                        if ((p <= (bet1 + stack1)) && (p > bet2) && (p <= (stack2 + bet2))) {
+                            m = 0;
+                            stack1 = stack1 + bet1 - p;
+                            bet1 = p;
+                            cout << "my bet=" << bet1 << endl;
+                            cout << "my stack=" << stack1 << endl;
+
+                        }
+                    }
+
+
+                    if ((l == "fold") && (bet1 < bet2)) {
+                        m = 0;
+                        fild = 1;
+                        fuld = 1;
+                        cout << "player2 stack =" << (stack2 + bet2 + bet1) << endl;
+                        cout << "my stack =" << stack1 << endl;
+                        stack2 = (stack2 + bet1 + bet2);
+
+                    }
+                    if (l == "check") {
+                        m = 0;
+                        fild = 1;
+                        stack2 = stack2 - bet1 + bet2;
+                        bet1 = bet2;
+                        cout << "my bet=" << bet1 << endl;
+                        cout << "my stack=" << stack1 << endl;
+
+                    }
+                    if ((l == "call") && (j > 500)) {
+                        m = 0;
+                        stack1 = stack1 + bet1 - bet2;
+                        bet1 = bet2;
+                        cout << "my bet=" << bet1 << endl;
+                        cout << "my stack=" << stack1 << endl;
+                    }
+
+                    if (m != 0) { cout << "введите правильные данные" << endl; }
+                }
+
+            }
+        }
+        pot = 0;
+        if ((stack1 == 1000) || (stack2 == 1000)) {
+            goto leble;
+
+        }
+        else {
+            //все действия на флопе
+            if (fuld == 0) {
+                if ((stack1 == 0) || (stack2 == 0)) {
+                    pot = (bet1 + bet2);
+                    cout << "board:";
+                    cout << cards[board[0]] << " ";
+                    cout << cards[board[1]] << " ";
+                    cout << cards[board[2]] << " ";
+                    cout << cards[board[3]] << " ";
+                    cout << cards[board[4]] << " " << endl;
+                    cout << "pot=" << pot << endl;
+                    e = 1;
+                    cout << cards[board[5]] << " ";
+                    cout << cards[board[6]] << " ";
+                    cout << "player2 cards: ";
+                    cout << cards[board[7]] << " ";
+                    cout << cards[board[8]] << " ";
+                    system("pause");
+                    cout << "кто победил игрок 1 или 2?";
+                    cin >> a;
+                    if (a == 1) {
+                        stack1 = stack1 + pot;
+                    }
+                    if (a == 2) {
+                        stack2 = stack2 + pot;
+                    }
+                    if (a == 3) {
+                        stack1 = (stack1 + ((pot + bet1 + bet2) / 2));
+                        stack2 = (stack2 + ((pot + bet1 + bet2) / 2));
+                    }
+                    cout << "my stack =" << stack1 << endl;
+                    cout << "player2 stack =" << stack2 << endl;
+
+
+                    //all in
+                }
+                else {
+                    pot = (bet1 + bet2);
+                    cout << "flop:";
+                    cout << cards[board[0]] << " ";
+                    cout << cards[board[1]] << " ";
+                    cout << cards[board[2]] << " " << endl;
+                    cout << "pot=" << pot << endl;
+                    system("pause");
+                    bet1 = 0;
+                    bet2 = 0;
+                    fild = 0;
+                    fuld = 0;
+                    j = 1;
+                    m = 1;
+                    x = 1;
+
+
+
+
+
+
+
+                    while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+                        for (g = 0; g < 27; g++) {
+                            cout << "|    |    |    |    |    |    |    |" << endl;
+                        }
+
+                        cout << "my turn" << endl;
+                        cout << "my cards:";
+                        cout << cards[board[5]] << " ";
+                        cout << cards[board[6]] << " ";
+                        cout << "наберите (fold / call / check / raise (до какого количества фишек))  :";
+                        x = 1;
+                        while (x != 0) {
+                            cin >> l;
+                            if (l == "raise") {
+                                cout << "сколько фишек:";
+                                cin >> p;
+                                if ((p <= (bet1 + stack1)) && (p > bet1) && (p <= (stack2 + bet2))) {
+                                    x = 0;
+                                    stack1 = stack1 + bet1 - p;
+                                    bet1 = p;
+                                    cout << "my bet=" << bet1 << endl;
+                                    cout << "my stack=" << stack1 << endl;
+                                    j = j + 500;
+                                }
+                            }
+                            if ((l == "check") && (bet1 == 0)) {
+                                cout << "my bet=" << bet1 << endl;
+                                cout << "my stack=" << stack1 << endl;
+                                j = j + 1;
+                                x = 0;
+                            }
+
+                            if ((l == "fold") && (bet1 < bet2)) {
+                                x = 0;
+                                fild = 1;
+                                fuld = 1;
+                                cout << "my stack =" << stack1 << endl;
+                                cout << "player2 stack =" << (stack2 + bet2 + bet1 + pot) << endl;
+                                stack2 = (stack2 + bet1 + bet2);
+                            }
+                            if ((l == "call") && (bet2 > bet1)) {
+                                x = 0;
+                                stack1 = stack1 - bet2 + bet1;
+                                bet1 = bet2;
+                                cout << "my bet=" << bet1 << endl;
+                                cout << "mystack=" << stack1 << endl;
+                                j = j + 1;
+                            }
+
+                            if (x != 0) { cout << "введите правильные данные" << endl; }
+                        }
+
+
+
+
+
+                        if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                            break;
+                        }
+                        else {
+                            for (g = 0; g < 27; g++) {
+                                cout << "|    |    |    |    |    |    |    |" << endl;
+                            }
+
+                            cout << "player2 turn" << endl;
+                            system("pause");
+                            cout << endl;
+                            cout << "player2 cards:";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " " << endl;
+                            cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                            m = 1;
+                            while (m != 0) {
+                                cin >> l;
+                                if (l == "raise") {
+                                    cout << "сколько фишек:";
+                                    cin >> p;
+                                    if ((p <= (bet2 + stack2)) && (p > bet1) && (p <= (stack1 + bet1))) {
+                                        m = 0;
+                                        stack2 = stack2 + bet1 - p;
+                                        bet2 = p;
+                                        cout << "player2 bet=" << bet2 << endl;
+                                        cout << "player2 stack=" << stack2 << endl;
+
+                                    }
+                                }
+
+
+                                if ((l == "fold") && (bet2 < bet1)) {
+                                    m = 0;
+                                    fild = 1;
+                                    fuld = 1;
+                                    cout << "my stack =" << (stack1 + bet1 + bet2 + pot) << endl;
+                                    cout << "player2 stack =" << stack2 << endl;
+                                    stack1 = (stack1 + bet1 + bet2);
+                                }
+                                if ((l == "check") && (bet1 == 0)) {
+                                    m = 0;
+                                    fild = 1;
+                                    stack2 = stack2;
+                                    bet1 = bet2;
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+
+                                }
+                                if ((l == "call") && (j > 500)) {
+                                    m = 0;
+                                    stack2 = stack2 + bet1 - bet2;
+                                    bet2 = bet1;
+                                    cout << "my bet=" << bet2 << endl;
+                                    cout << "my stack=" << stack2 << endl;
+                                }
+
+                                if (m != 0) { cout << "введите правильные данные" << endl; }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        if ((stack1 == 1000) || (stack2 == 1000)) {
+            goto leble;
+
+        }
+        else {
+            //все действия на тёрне
+            if (fuld == 0) {
+                if ((stack1 == 0) || (stack2 == 0)) {
+                    pot = (bet1 + bet2);
+                    cout << "board:";
+                    cout << cards[board[0]] << " ";
+                    cout << cards[board[1]] << " ";
+                    cout << cards[board[2]] << " ";
+                    cout << cards[board[3]] << " ";
+                    cout << cards[board[4]] << " " << endl;
+                    cout << "pot=" << pot << endl;
+                    e = 1;
+                    cout << cards[board[5]] << " ";
+                    cout << cards[board[6]] << " ";
+                    cout << "player2 cards: ";
+                    cout << cards[board[7]] << " ";
+                    cout << cards[board[8]] << " ";
+                    system("pause");
+                    cout << "кто победил игрок 1 или 2?";
+                    cin >> a;
+                    if (a == 1) {
+                        stack1 = stack1 + pot;
+                    }
+                    if (a == 2) {
+                        stack2 = stack2 + pot;
+                    }
+                    if (a == 3) {
+                        stack1 = (stack1 + ((pot + bet1 + bet2) / 2));
+                        stack2 = (stack2 + ((pot + bet1 + bet2) / 2));
+                    }
+                    cout << "my stack =" << stack1 << endl;
+                    cout << "player2 stack =" << stack2 << endl;
+
+
+                    //all in
+                }
+                else {
+                    pot = (bet1 + bet2);
+                    cout << "turn:";
+                    cout << cards[board[0]] << " ";
+                    cout << cards[board[1]] << " ";
+                    cout << cards[board[2]] << " ";
+                    cout << cards[board[3]] << " " << endl;
+                    cout << "pot=" << pot << endl;
+                    system("pause");
+                    bet1 = 0;
+                    bet2 = 0;
+                    fild = 0;
+                    fuld = 0;
+                    j = 1;
+                    m = 1;
+                    x = 1;
+
+
+
+
+
+
+
+                    while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+                        for (g = 0; g < 27; g++) {
+                            cout << "|    |    |    |    |    |    |    |" << endl;
+                        }
+
+                        cout << "my turn" << endl;
+                        cout << "my cards:";
+                        cout << cards[board[5]] << " ";
+                        cout << cards[board[6]] << " ";
+                        cout << "наберите (fold / call / check / raise (до какого количества фишек))  :";
+                        x = 1;
+                        while (x != 0) {
+                            cin >> l;
+                            if (l == "raise") {
+                                cout << "сколько фишек:";
+                                cin >> p;
+                                if ((p <= (bet1 + stack1)) && (p > bet1) && (p <= (stack2 + bet2))) {
+                                    x = 0;
+                                    stack1 = stack1 + bet1 - p;
+                                    bet1 = p;
+                                    cout << "my bet=" << bet1 << endl;
+                                    cout << "my stack=" << stack1 << endl;
+                                    j = j + 500;
+                                }
+                            }
+                            if ((l == "check") && (bet1 == 0)) {
+                                cout << "my bet=" << bet1 << endl;
+                                cout << "my stack=" << stack1 << endl;
+                                j = j + 1;
+                                x = 0;
+                            }
+
+                            if ((l == "fold") && (bet1 < bet2)) {
+                                x = 0;
+                                fild = 1;
+                                fuld = 1;
+                                cout << "my stack =" << stack1 << endl;
+                                cout << "player2 stack =" << (stack2 + bet2 + bet1 + pot) << endl;
+                                stack2 = (stack2 + bet1 + bet2);
+                            }
+                            if ((l == "call") && (bet2 > bet1)) {
+                                x = 0;
+                                stack1 = stack1 - bet2 + bet1;
+                                bet1 = bet2;
+                                cout << "my bet=" << bet1 << endl;
+                                cout << "mystack=" << stack1 << endl;
+                                j = j + 1;
+                            }
+
+                            if (x != 0) { cout << "введите правильные данные" << endl; }
+                        }
+
+
+
+
+
+                        if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                            break;
+                        }
+                        else {
+                            for (g = 0; g < 27; g++) {
+                                cout << "|    |    |    |    |    |    |    |" << endl;
+                            }
+
+                            cout << "player2 turn" << endl;
+                            system("pause");
+                            cout << endl;
+                            cout << "player2 cards:";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " " << endl;
+                            cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                            m = 1;
+                            while (m != 0) {
+                                cin >> l;
+                                if (l == "raise") {
+                                    cout << "сколько фишек:";
+                                    cin >> p;
+                                    if ((p <= (bet2 + stack2)) && (p > bet1) && (p <= (stack1 + bet1))) {
+                                        m = 0;
+                                        stack2 = stack2 + bet1 - p;
+                                        bet2 = p;
+                                        cout << "player2 bet=" << bet2 << endl;
+                                        cout << "player2 stack=" << stack2 << endl;
+
+                                    }
+                                }
+
+
+                                if ((l == "fold") && (bet2 < bet1)) {
+                                    m = 0;
+                                    fild = 1;
+                                    fuld = 1;
+                                    cout << "my stack =" << (stack1 + bet1 + bet2 + pot) << endl;
+                                    cout << "player2 stack =" << stack2 << endl;
+                                    stack1 = (stack1 + bet1 + bet2);
+                                }
+                                if ((l == "check") && (bet1 == 0)) {
+                                    m = 0;
+                                    fild = 1;
+                                    stack2 = stack2;
+                                    bet1 = bet2;
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+
+                                }
+                                if ((l == "call") && (j > 500)) {
+                                    m = 0;
+                                    stack2 = stack2 + bet1 - bet2;
+                                    bet2 = bet1;
+                                    cout << "my bet=" << bet2 << endl;
+                                    cout << "my stack=" << stack2 << endl;
+                                }
+
+                                if (m != 0) { cout << "введите правильные данные" << endl; }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        //все действия на ривере
+        if ((stack1 == 1000) || (stack2 == 1000)) {
+            goto leble;
+        }
+        else {
+            if (fuld == 0) {
+                if ((stack1 == 0) || (stack2 == 0)) {
+                    if (e == 0) {
+                        pot = (pot + bet1 + bet2);
+                        cout << "board:";
+                        cout << cards[board[0]] << " ";
+                        cout << cards[board[1]] << " ";
+                        cout << cards[board[2]] << " ";
+                        cout << cards[board[3]] << " ";
+                        cout << cards[board[4]] << " " << endl;
+                        cout << "pot=" << pot << endl;
+                        cout << cards[board[5]] << " ";
+                        cout << cards[board[6]] << " ";
+                        cout << "player2 cards: ";
+                        cout << cards[board[7]] << " ";
+                        cout << cards[board[8]] << " ";
+                        system("pause");
+                        cout << "кто победил игрок 1 или 2?";
+                        cin >> a;
+                        if (a == 1) {
+                            stack1 = stack1 + pot;
+                        }
+                        if (a == 2) {
+                            stack2 = stack2 + pot;
+                        }
+                        if (a == 3) {
+                            stack1 = (stack1 + ((pot + bet1 + bet2) / 2));
+                            stack2 = (stack2 + ((pot + bet1 + bet2) / 2));
+                        }
+                        cout << "my stack =" << stack1 << endl;
+                        cout << "player2 stack =" << stack2 << endl;
+
+
+                    }
+
+                    //all in
+                }
+                else {
+                    pot = (pot + bet1 + bet2);
+                    cout << "river:";
+                    cout << cards[board[0]] << " ";
+                    cout << cards[board[1]] << " ";
+                    cout << cards[board[2]] << " ";
+                    cout << cards[board[3]] << " ";
+                    cout << cards[board[4]] << " " << endl;
+                    cout << "pot=" << pot << endl;
+                    system("pause");
+                    bet1 = 0;
+                    bet2 = 0;
+                    fild = 0;
+                    fuld = 0;
+                    j = 1;
+                    m = 1;
+                    x = 1;
+
+
+
+
+
+
+
+                    while ((fild == 0) && ((bet1 != bet2) || (j <= 1))) {
+                        for (g = 0; g < 27; g++) {
+                            cout << "|    |    |    |    |    |    |    |" << endl;
+                        }
+
+                        cout << "my turn" << endl;
+                        cout << "my cards:";
+                        cout << cards[board[5]] << " ";
+                        cout << cards[board[6]] << " ";
+                        cout << "наберите (fold / call / check / raise (до какого количества фишек))  :";
+                        x = 1;
+                        while (x != 0) {
+                            cin >> l;
+                            if (l == "raise") {
+                                cout << "сколько фишек:";
+                                cin >> p;
+                                if ((p <= (bet1 + stack1)) && (p > bet1) && (p <= (stack2 + bet2))) {
+                                    x = 0;
+                                    stack1 = stack1 + bet1 - p;
+                                    bet1 = p;
+                                    cout << "my bet=" << bet1 << endl;
+                                    cout << "my stack=" << stack1 << endl;
+                                    j = j + 500;
+                                }
+                            }
+                            if ((l == "check") && (bet1 == 0)) {
+                                cout << "my bet=" << bet1 << endl;
+                                cout << "my stack=" << stack1 << endl;
+                                j = j + 1;
+                                x = 0;
+                            }
+
+                            if ((l == "fold") && (bet1 < bet2)) {
+                                x = 0;
+                                fild = 1;
+                                fuld = 1;
+                                cout << "my stack =" << stack1 << endl;
+                                cout << "player2 stack =" << (stack2 + bet2 + bet1 + pot) << endl;
+                                stack2 = (stack2 + bet1 + bet2);
+                            }
+                            if ((l == "call") && (bet2 > bet1)) {
+                                x = 0;
+                                stack1 = stack1 - bet2 + bet1;
+                                bet1 = bet2;
+                                cout << "my bet=" << bet1 << endl;
+                                cout << "my stack=" << stack1 << endl;
+                                j = j + 1;
+                            }
+
+                            if (x != 0) { cout << "введите правильные данные" << endl; }
+                        }
+
+
+
+
+
+                        if ((fild == 1) || ((bet1 == bet2) && (j > 2))) {
+                            break;
+                        }
+                        else {
+                            for (g = 0; g < 27; g++) {
+                                cout << "|    |    |    |    |    |    |    |" << endl;
+                            }
+
+                            cout << "my turn" << endl;
+                            system("pause");
+                            cout << endl;
+                            cout << "player2 cards:";
+                            cout << cards[board[7]] << " ";
+                            cout << cards[board[8]] << " " << endl;
+                            cout << "наберите (fold / call /check / raise (до какого количества фишек))  :";
+                            m = 1;
+                            while (m != 0) {
+                                cin >> l;
+                                if (l == "raise") {
+                                    cout << "сколько фишек:";
+                                    cin >> p;
+                                    if ((p <= (bet2 + stack2)) && (p > bet1) && (p <= (stack1 + bet1))) {
+                                        m = 0;
+                                        stack2 = stack2 + bet2 - p;
+                                        bet1 = p;
+                                        cout << "player2 bet=" << bet2 << endl;
+                                        cout << "player2 stack=" << stack2 << endl;
+
+                                    }
+                                }
+
+
+                                if ((l == "fold") && (bet2 < bet1)) {
+                                    m = 0;
+                                    fild = 1;
+                                    fuld = 1;
+                                    cout << "my stack =" << (stack1 + bet1 + bet2 + pot) << endl;
+                                    cout << "player2 stack =" << stack2 << endl;
+                                    stack1 = (stack1 + bet1 + bet2);
+                                }
+                                if ((l == "check") && (bet1 == 0)) {
+                                    m = 0;
+                                    fild = 1;
+                                    stack1 = stack1;
+                                    bet2 = bet1;
+                                    cout << "my bet=" << bet2 << endl;
+                                    cout << "my stack=" << stack2 << endl;
+
+                                }
+                                if ((l == "call") && (j > 500)) {
+                                    m = 0;
+                                    stack2 = stack2 + bet1 - bet2;
+                                    bet2 = bet1;
+                                    cout << "player2 bet=" << bet2 << endl;
+                                    cout << "player2 stack=" << stack2 << endl;
+                                }
+
+                                if (m != 0) { cout << "введите правильные данные" << endl; }
+                            }
+
+                        }
+                    }
+                }
+                for (g = 0; g < 27; g++) {
+                    cout << "|    |    |    |    |    |    |    |" << endl;
+                }
+
+                //все дефствия на ривере 
+                cout << cards[board[5]] << " ";
+                cout << cards[board[6]] << " ";
+                cout << "player2 cards: ";
+                cout << cards[board[7]] << " ";
+                cout << cards[board[8]] << " ";
+                system("pause");
+                
+                cout << "кто победил игрок 1 или 2?";
+                cin >> a;
+                if (a == 1) {
+                    stack1 = stack1 + pot;
+                }
+                if (a == 2) {
+                    stack2 = stack2 + pot;
+                }
+                if (a == 3) {
+                    stack1 = (stack1 + ((pot+bet1+bet2) / 2));
+                    stack2 = (stack2 + ((pot+bet1+bet2) / 2));
+                }
+                system("pause");
+                cout << "my stack =" << stack1 << endl;
+                cout << "player2 stack =" << stack2 << endl;
+            }
+
+        }
+        }
+        a = a + 1;
+    
+    }
+    system("pause");
+    return 0;
+
+}
